@@ -1,0 +1,37 @@
+#import /user.graphql
+#import /drinks.graphql
+
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type Query {
+    user(id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"]) email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])): User @find
+    users(name: String @where(operator: "like")): [User!]! @paginate(defaultCount: 10)
+    
+}
+
+extend type Query @guard {
+    me: User! @auth
+    drinks: [Drink!]! @all(model: "App\\Models\\Drink")
+    drink(id: ID! @eq): Drink! @find(model: "App\\Models\\Drink")
+    customDrinks: [CustomDrink!]! @all(model: "App\\Models\\CustomDrink") @whereAuth(relation: "user")
+    drinkLogElements(from: Date @where(key: "created_at" clause: "whereDate" operator: ">=")): [DrinkLogElement!]! @orderBy(column: "created_at" direction:"DESC")  @paginate(model: "App\\Models\\DrinkLogElement") @whereAuth(relation: "user")
+    currentLevels: HydrationLevel
+}
+
+
+type Mutation {
+    login(email: String! password: String!): String!
+    register(data: RegisterInput!): Boolean!
+}
+
+extend type Mutation @guard {
+    addDrink(data: DrinkInput!): DrinkLogElement!
+    changeSettings(data: UserDataInput!): User!
+    createCustomDrink(data: CreateCustomDrinkInput!): Drink!
+    updateCustomDrink(id: ID! data: UpdateCustomDrinkInput!): Drink!
+    deleteCustomDrink(id: ID! @whereKey): Drink!
+    deleteDrinkLogElement(id: ID! @whereKey): DrinkLogElement @delete(model: "App\\Models\\DrinkLogElement") @whereAuth(relation: "user")
+    setFavouriteDrink(id: ID! favourite: Boolean): Drink!
+}
+

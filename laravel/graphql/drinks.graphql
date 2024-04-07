@@ -1,0 +1,84 @@
+type DrinkInterface {
+    id: ID!
+    name: String!
+    default_ml: Int!
+    caffeine: Int!
+    sugar: Int!
+    effectiveness: Float!
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Drink implements DrinkInterface {
+    id: ID!
+    name: String!
+    default_ml: Int!
+    caffeine: Int!
+    sugar: Int!
+    effectiveness: Float!
+    is_favourite: Boolean!
+    icon: String
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type CustomDrink implements DrinkInterface {
+    id: ID!
+    name: String!
+    default_ml: Int!
+    caffeine: Int!
+    sugar: Int!
+    effectiveness: Float!
+    user: User @belongsTo
+    is_favourite: Boolean!
+    icon: String
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type DrinkLogElement {
+    id: ID!
+    user: User! @belongsTo
+    drink_name: String!
+    volume: Int!
+    sugar: Float
+    caffeine: Int
+    created_at: DateTime!
+}
+
+type HydrationLevel {
+    current: Float!
+    goal: Float!
+    caffeine: Int!
+    caffeine_max: Int!
+    sugar: Float!
+    sugar_max: Int!
+    score: Int!
+}
+
+
+input DrinkInput {
+    is_custom: Boolean!
+    id: ID!
+    volume: Int
+}
+
+input CreateCustomDrinkInput {
+    name: String!
+    default_ml: Int!
+    sugar: Int!
+    caffeine: Int!
+    effectiveness: Float!
+    icon: String!
+}
+
+input UpdateCustomDrinkInput {
+    name: String
+    default_ml: Int
+    sugar: Int
+    caffeine: Int
+    effectiveness: Float
+    is_favourite: Boolean
+    icon: String
+}
+

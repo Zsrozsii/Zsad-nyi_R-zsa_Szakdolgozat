@@ -1,0 +1,33 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    email_verified_at: DateTime
+    created_at: DateTime!
+    updated_at: DateTime!
+    gender: Boolean
+    height: Int
+    weight: Float!
+    hydration_goal: Int!
+    caffeine_max: Int!
+    sugar_max: Int!
+}
+
+input RegisterInput {
+    name: String!
+    email: String!
+    password: String!
+    gender: Boolean!
+    height: Int!
+    weight: Int!
+}
+
+input UserDataInput {
+    name: String
+    email: String
+    height: Int
+    weight: Int
+    hydration_goal: Int
+    caffeine_max: Int
+    sugar_max: Int
+}

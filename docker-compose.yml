@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # Laravel PHP Backend
+  app:
+    build:
+      context: ./laravel/
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    volumes:
+      - ./laravel:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - db
+    networks:
+      - laravel-net
+
+  # Nginx Web Server
+  webserver:
+    image: nginx:latest
+    container_name: nginx-server
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Mount the Nginx configuration
+      - ./laravel:/var/www/html
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - laravel-net
+
+  
+
+  # MySQL Database
+  db:
+    image: mysql:latest
+    container_name: mysql-db
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: pass
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel-net
+
+networks:
+  laravel-net:
